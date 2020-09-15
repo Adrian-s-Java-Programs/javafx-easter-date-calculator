@@ -36,7 +36,7 @@ public class EasterDateCalculator extends Application {
   final int maxLength = 8;
 
   /* variable used for knowing when the application displayed a message after shortening a too long input given by the user */
-  boolean lenghtLimitMessageDislayed = false;
+  boolean lenghtLimitMessageDisplayed = false;
 
   /* variable used for displaying the result */
   Label result = new Label();
@@ -83,7 +83,7 @@ public class EasterDateCalculator extends Application {
         showMessage("Input field is limited to "+maximumLength+" characters.");
 
         /* mark that the input has been automatically shortened and that a message about this has been displayed */
-        lenghtLimitMessageDislayed = true;
+        lenghtLimitMessageDisplayed = true;
 
       });
 
@@ -92,14 +92,14 @@ public class EasterDateCalculator extends Application {
     else{
 
       /* it means that the input does not exceed the length limit */
-      if (lenghtLimitMessageDislayed == true){
+      if (lenghtLimitMessageDisplayed == true){
 
         /*
          * it means that the user's input has previously been shortened, but now there is no case for this,
          * so the message about the previous shortening should no longer be displayed
          */
         showMessage("");
-        lenghtLimitMessageDislayed = false;
+        lenghtLimitMessageDisplayed = false;
 
       }
 
@@ -162,22 +162,11 @@ public class EasterDateCalculator extends Application {
   }
 
   /*
-   * This method rounds down a double number to the nearest integer.
-   * It is used when calculating the difference in days between a Julian and a Gregorian date.
-   */
-  int roundDownToInt(double d){
-    String doubleNumberAsString = String.valueOf(d);
-    int indexOfDecimal = doubleNumberAsString.indexOf(".");
-    int nearestInteger = Integer.parseInt(doubleNumberAsString.substring(0, indexOfDecimal));
-    return nearestInteger;
-  }
-
-  /*
    * This method calculates the number of days to be added to a Julian date in order to obtain its corresponding Gregorian date.
    * A negative number means that the Julian calendar is ahead of the Gregorian calendar (this occurs with small years).
    */
   public int getJulianOffset(int year){
-    return roundDownToInt((double)year/(double)100) - roundDownToInt((double)year/(double)400) - 2; 
+    return (int)Math.floor(year/100d) - (int)Math.floor(year/400d) - 2;
   }
 
   /* This method is used to convert a Julian date to a Gregorian date */
@@ -294,8 +283,8 @@ public class EasterDateCalculator extends Application {
         showMessage(message);
 
         /* A result message has been displayed, so we reset the variable used with input length message */
-        if (lenghtLimitMessageDislayed == true){
-          lenghtLimitMessageDislayed = false;
+        if (lenghtLimitMessageDisplayed == true){
+          lenghtLimitMessageDisplayed = false;
         }
 
       }
