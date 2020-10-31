@@ -141,7 +141,7 @@ public class EasterDateCalculator extends Application {
    * This method returns Julian date for Eastern (Orthodox) Easter.
    * To obtain the date according to present time calendar, this method's result needs to be converted to Gregorian date. 
    */
-  LocalDate getJulianEasterOnJulianCalendar(int year){
+  JulianDate getJulianEasterOnJulianCalendar(int year){
 
     /* we use Meeus's Julian algorithm */
 
@@ -157,21 +157,9 @@ public class EasterDateCalculator extends Application {
     month = (d + e + 114) / 31;
     day = ((d + e + 114) % 31) + 1;
 
-    return LocalDate.of(year, month, day); 
+    /* we return an instance of a custom class created to hold Julian dates */ 
+    return new JulianDate(year, month, day);
 
-  }
-
-  /*
-   * This method calculates the number of days to be added to a Julian date in order to obtain its corresponding Gregorian date.
-   * A negative number means that the Julian calendar is ahead of the Gregorian calendar (this occurs with small years).
-   */
-  public int getJulianOffset(int year){
-    return (int)Math.floor(year/100d) - (int)Math.floor(year/400d) - 2;
-  }
-
-  /* This method is used to convert a Julian date to a Gregorian date */
-  LocalDate julianDateToGregorianDate(LocalDate julianDate){
-    return julianDate.plusDays(getJulianOffset(julianDate.getYear()));
   }
 
   /*
@@ -179,7 +167,7 @@ public class EasterDateCalculator extends Application {
    * It returns a date where the month is given by its name, instead of its number. This date will be displayed to the user.
    */
   public String getCustomFormattedDate(LocalDate date){
-    return date.getDayOfMonth()+"-"+date.getMonth()+"-"+date.getYear();
+    return date.getDayOfMonth()+" "+date.getMonth()+" "+date.getYear();
   }
 
   public static void main(String[] args){
@@ -224,6 +212,7 @@ public class EasterDateCalculator extends Application {
         String message="";
         String yearText = yearField.getText();
         int givenYear = 0;
+        JulianDate julianEasterJulianDate;
 
         if(validateValue(yearText) == true){
 
@@ -234,9 +223,11 @@ public class EasterDateCalculator extends Application {
                      +"\nThis application returns results for years starting with AD 26.";
           else{
 
-            if (givenYear<1583) 
+            if (givenYear<1583){ 
               /* Gregorian calendar did not exist, so only Julian Easter is calculated */
-              message = "Easter date was "+getCustomFormattedDate(getJulianEasterOnJulianCalendar(givenYear))+" (Julian date).";
+              julianEasterJulianDate = getJulianEasterOnJulianCalendar(givenYear);
+              message = "Easter date was "+julianEasterJulianDate.getCustomFormattedDate()+" (Julian date).";
+            }
 
             else {
 
@@ -247,8 +238,8 @@ public class EasterDateCalculator extends Application {
 
               LocalDate today = LocalDate.now();
               LocalDate westernEasterDate = getWesternEasterOnGregorianCalendar(givenYear);
-              LocalDate julianEasterJulianDate = getJulianEasterOnJulianCalendar(givenYear);
-              LocalDate julianEasterGregorianDate = julianDateToGregorianDate(julianEasterJulianDate);
+              julianEasterJulianDate = getJulianEasterOnJulianCalendar(givenYear);
+              LocalDate julianEasterGregorianDate = julianEasterJulianDate.julianDateToGregorianDate();
 
               if (westernEasterDate.compareTo(today)<0)
                 verbForWesternEasterResultTense = "was";
@@ -259,7 +250,7 @@ public class EasterDateCalculator extends Application {
               message="Western Easter "+verbForWesternEasterResultTense+ " on "+getCustomFormattedDate(westernEasterDate)+" (Gregorian date).";
               if (westernEasterDate.compareTo(today)==0) message+=" Today.";
 
-              message+="\nEastern Easter "+verbForEasternEasterResultTense+" on "+getCustomFormattedDate(julianEasterJulianDate)+" (Julian date). That is "+getCustomFormattedDate(julianEasterGregorianDate)+" (Gregorian date).";
+              message+="\nEastern Easter "+verbForEasternEasterResultTense+" on "+julianEasterJulianDate.getCustomFormattedDate()+" (Julian date). That is "+getCustomFormattedDate(julianEasterGregorianDate)+" (Gregorian date).";
               if (julianEasterGregorianDate.compareTo(today)==0) message+=" Today.";
 
               /* If both Easter dates are the same (according to presently used Gregorian calendar) display an appropriate message */
