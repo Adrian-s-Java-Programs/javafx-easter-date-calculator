@@ -34,6 +34,8 @@ public class EasterDateCalculator extends Application {
 
   /* maximum input length */
   final int maxLength = 8;
+  
+  final String lineSeparator = System.lineSeparator();
 
   /* variable used for knowing when the application displayed a message after shortening a too long input given by the user */
   boolean lenghtLimitMessageDisplayed = false;
@@ -220,7 +222,7 @@ public class EasterDateCalculator extends Application {
 
           if (givenYear<26)
             message = "It is estimated that Jesus was crucified between AD 26 and AD 37. Before that, no Easter existed."
-                     +"\nThis application returns results for years starting with AD 26.";
+                     +lineSeparator+"This application returns results for years starting with AD 26.";
           else{
 
             if (givenYear<1583){ 
@@ -250,15 +252,15 @@ public class EasterDateCalculator extends Application {
               message="Western Easter "+verbForWesternEasterResultTense+ " on "+getCustomFormattedDate(westernEasterDate)+" (Gregorian date).";
               if (westernEasterDate.compareTo(today)==0) message+=" Today.";
 
-              message+="\nEastern Easter "+verbForEasternEasterResultTense+" on "+julianEasterJulianDate.getCustomFormattedDate()+" (Julian date). That is "+getCustomFormattedDate(julianEasterGregorianDate)+" (Gregorian date).";
+              message+=lineSeparator+"Eastern Easter "+verbForEasternEasterResultTense+" on "+julianEasterJulianDate.getCustomFormattedDate()+" (Julian date). That is "+getCustomFormattedDate(julianEasterGregorianDate)+" (Gregorian date).";
               if (julianEasterGregorianDate.compareTo(today)==0) message+=" Today.";
 
               /* If both Easter dates are the same (according to presently used Gregorian calendar) display an appropriate message */
               if (westernEasterDate.compareTo(julianEasterGregorianDate)==0){
                 if (westernEasterDate.compareTo(today)<0)
-                  message+="\nBoth Easters were celebrated on the same day.";
+                  message+=lineSeparator+"Both Easters were celebrated on the same day.";
                 else
-                  message+="\nBoth Easters are celebrated on the same day.";
+                  message+=lineSeparator+"Both Easters are celebrated on the same day.";
               }
 
             }
